@@ -32,24 +32,24 @@ Xoá tài khoản người dùng
 Xem danh sách người dùng
 Phục hồi dữ liệu từ bản sao lưu
 
-  *Hướng dẫn cài đặt và biên dịch
+*Hướng dẫn cài đặt và biên dịch
 Yêu cầu:
 Trình biên dịch C++ (g++ hoặc MSVC)
 Tập tin mã nguồn: PTKL.cpp
 Không cần thư viện ngoài
 
-  *Cách chạy chương trình
-Khởi động chương trình:
-bash
-Sao chép
-Chỉnh sửa
-./PTKL
-Giao diện dòng lệnh chính:
-=== HE THONG QUAN LY VI DIEM ===
-1. Dang nhap
-2. Dang ky
-3. Thoat
-  *Các thao tác trong chương trình:
-Nhập tài khoản và mật khẩu để đăng nhập
-Với người dùng mới tạo và mật khẩu tự động, nhập đúng mật khẩu tạm → hệ thống sẽ yêu cầu đổi mật khẩu ở lần đầu đăng nhập
-Các thao tác như xem ví, chuyển điểm, cập nhật thông tin sẽ hiển thị menu cụ thể
+*Cách chạy chương trình
+  Khởi động chương trình:
+  bash
+  Sao chép
+  Chỉnh sửa
+  ./PTKL
+  Giao diện dòng lệnh chính:
+  === HE THONG QUAN LY VI DIEM ===
+  1. Dang nhap
+  2. Dang ky
+  3. Thoat
+     *Các thao tác trong chương trình:
+     Nhập tài khoản và mật khẩu để đăng nhập
+     Với người dùng mới tạo và mật khẩu tự động, nhập đúng mật khẩu tạm → hệ thống sẽ yêu cầu đổi mật khẩu ở lần đầu đăng nhập
+     Các thao tác như xem ví, chuyển điểm, cập nhật thông tin sẽ hiển thị menu cụ thể
