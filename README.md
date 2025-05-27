@@ -16,7 +16,8 @@ Nguyễn Thanh Tâm
 Tạ Hoàng Long 
 + Phân chia người dùng và chức năng
 
-  *Phân tích & Đặc tả chức năng
+
+*Phân tích & Đặc tả chức năng
 Người dùng thông thường:
 Đăng ký tài khoản
 Đăng nhập hệ thống
