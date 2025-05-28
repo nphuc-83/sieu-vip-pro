@@ -9,6 +9,9 @@
 #include <set>
 using namespace std;
 
+
+const int MAX_TRANSFER_AMOUNT = 1000000; 
+
 void loadUsersFromFile();
 void loadTransactions();
 void saveUsersToFile();
@@ -17,7 +20,7 @@ void restoreFromBackup();
 void backupUsersBeforeChange(); 
 
 struct User {
-    string walletId;      
+    string walletId;       
     string username;
     string passwordHash;
     string role;
@@ -52,7 +55,8 @@ string generateUniqueWalletId() {
     int counter = 0;
     
     do {
-        walletId = "WL";
+        walletId = "WL"; 
+        
         
         time_t now = time(0);
         string timeStr = to_string(now % 100000); 
@@ -61,13 +65,13 @@ string generateUniqueWalletId() {
             walletId += chars[rand() % chars.length()];
         }
         
-
+        
         walletId += to_string(counter);
         counter++;
         
     } while (usedWalletIds.find(walletId) != usedWalletIds.end() && counter < 1000);
     
-    usedWalletIds.insert(walletId); 
+    usedWalletIds.insert(walletId);
     return walletId;
 }
 
@@ -110,7 +114,7 @@ bool verifyOTP(const string& username) {
 
 
 void backupUsersBeforeChange() {
- 
+
     ifstream src("users.txt", ios::binary);
     ofstream dst("users_backup.txt", ios::binary);
     
@@ -124,7 +128,7 @@ void backupUsersBeforeChange() {
 }
 
 void restoreFromBackup() {
-  
+   
     ifstream checkFile("users_backup.txt");
     if (!checkFile.good()) {
         cout << "File backup khong ton tai.\n";
@@ -132,7 +136,7 @@ void restoreFromBackup() {
         return;
     }
     
-
+  
     checkFile.seekg(0, ios::end);
     if (checkFile.tellg() == 0) {
         cout << "File backup trong hoac khong co du lieu de phuc hoi.\n";
@@ -141,7 +145,7 @@ void restoreFromBackup() {
     }
     checkFile.close();
     
-   
+  
     char confirm;
     cout << "Ban co chac chan muon phuc hoi du lieu? Thao tac nay se ghi de du lieu hien tai (y/n): ";
     cin >> confirm;
@@ -150,14 +154,14 @@ void restoreFromBackup() {
         return;
     }
     
- 
+   
     ifstream src("users_backup.txt");
     if (!src.is_open()) {
         cout << "Khong the mo file backup de doc.\n";
         return;
     }
     
-
+ 
     ofstream dst("users.txt");
     if (!dst.is_open()) {
         cout << "Khong the mo file users.txt de ghi.\n";
@@ -165,7 +169,7 @@ void restoreFromBackup() {
         return;
     }
     
-  
+    
     string line;
     while (getline(src, line)) {
         dst << line << "\n";
@@ -176,13 +180,13 @@ void restoreFromBackup() {
     
     cout << "Phuc hoi du lieu thanh cong tu users_backup.txt.\n";
     
-
+    
     loadUsersFromFile();
     cout << "Du lieu da duoc cap nhat trong he thong.\n";
 }
 
 void saveUsersToFile() {
-   
+    
     ofstream out("users.txt");
     for (auto& u : users) {
         out << u.walletId << ',' << u.username << ',' << u.passwordHash << ',' << u.role << ','
@@ -195,7 +199,7 @@ void loadUsersFromFile() {
     ifstream in("users.txt");
     User u;
     users.clear();
-    usedWalletIds.clear();
+    usedWalletIds.clear(); 
     
     while (getline(in, u.walletId, ',')) {
         usedWalletIds.insert(u.walletId); 
@@ -289,7 +293,7 @@ void changePassword(User& user) {
         return;
     }
     
-   
+  
     backupUsersBeforeChange();
     
     cout << "Nhap mat khau moi: "; cin >> newPass;
@@ -312,11 +316,33 @@ void transferPoints(User& sender) {
         cout << "Nguoi nhan khong ton tai.\n";
         return;
     }
-    cout << "Nhap so diem can chuyen: "; cin >> amount;
-    if (sender.wallet < amount) {
-        cout << "Khong du so du.\n";
+    
+   
+    cout << "Nhap so diem can chuyen: ";
+    while (!(cin >> amount)) {
+        cout << "Vui long nhap so hop le: ";
+        cin.clear(); 
+        cin.ignore(10000, '\n'); 
+    }
+    
+   
+    if (amount <= 0) {
+        cout << "So diem khong hop le. So diem phai lon hon 0.\n";
         return;
     }
+    
+    
+    if (amount > MAX_TRANSFER_AMOUNT) {
+        cout << "So diem khong hop le. So diem vuot qua gioi han he thong (" << MAX_TRANSFER_AMOUNT << " diem).\n";
+        return;
+    }
+    
+
+    if (sender.wallet < amount) {
+        cout << "Khong du so du. So du hien tai: " << sender.wallet << " diem.\n";
+        return;
+    }
+    
     string otp = generateOTP(sender.username);
     cout << "OTP: " << otp << endl;
     if (!verifyOTP(sender.username)) {
@@ -324,7 +350,7 @@ void transferPoints(User& sender) {
         return;
     }
     
-  
+ 
     backupUsersBeforeChange();
     
     sender.wallet -= amount;
@@ -359,7 +385,7 @@ void deleteAccount() {
         
         backupUsersBeforeChange();
         
-        
+       
         usedWalletIds.erase(target->walletId);
         
         users.erase(remove_if(users.begin(), users.end(), [&](User u){ return u.username == userToDelete; }), users.end());
@@ -384,12 +410,17 @@ void userMenu(User& user) {
     do {
         cout << "\nWallet ID: " << user.walletId << "\n";
         cout << "1. Xem vi\n2. Doi mat khau\n3. Chinh sua thong tin\n4. Chuyen diem\n5. Xem lich su giao dich\n6. Thoat\nLua chon: ";
-        cin >> choice;
+        while (!(cin >> choice)) {
+            cout << "Vui long nhap so hop le (1-6): ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+        }
         if (choice == 1) cout << "So du: " << user.wallet << " diem\n";
         else if (choice == 2) changePassword(user);
         else if (choice == 3) updateUserInfo(user);
         else if (choice == 4) transferPoints(user);
         else if (choice == 5) viewTransactions(user);
+        else if (choice < 1 || choice > 6) cout << "Lua chon khong hop le. Vui long chon tu 1-6.\n";
     } while (choice != 6);
 }
 
@@ -398,12 +429,16 @@ void adminMenu(User& admin) {
     do {
         cout << "\nAdmin Wallet ID: " << admin.walletId << "\n";
         cout << "1. Xem danh sach tai khoan\n2. Tao tai khoan moi\n3. Sua thong tin tai khoan khac\n4. Xoa tai khoan\n5. phuc hoi du lieu\n6. Thoat\nLua chon: ";
-        cin >> choice;
+        while (!(cin >> choice)) {
+            cout << "Vui long nhap so hop le (1-6): ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+        }
         if (choice == 1)
             for (auto& u : users)
                 cout << "Wallet ID: " << u.walletId << " - " << u.username << " - " << u.role << " - " << u.wallet << " diem\n";
         else if (choice == 2) {
-          
+           
             
             User u;
             u.walletId = generateUniqueWalletId(); 
@@ -453,6 +488,8 @@ void adminMenu(User& admin) {
             return;
         } else if (choice == 6) {
             break;
+        } else if (choice < 1 || choice > 6) {
+            cout << "Lua chon khong hop le. Vui long chon tu 1-6.\n";
         }
     } while (choice != 6); 
 }
@@ -475,7 +512,7 @@ void loginSystem() {
 }
 
 void dangKyTaiKhoan() {
-    
+   
     
     User u;
     u.walletId = generateUniqueWalletId(); 
@@ -484,7 +521,7 @@ void dangKyTaiKhoan() {
     cout << "Nhap ten tai khoan: "; cin >> u.username;
     if (findUser(u.username)) {
         cout << "Tai khoan da ton tai!\n";
-       
+     
         usedWalletIds.erase(u.walletId);
         return;
     }
@@ -548,10 +585,14 @@ int main() {
         cout << "\n=== HE THONG QUAN LY VI DIEM ===\n";
         cout << "1. Dang nhap\n2. Dang ky\n3. Thoat\n";
         cout << "Lua chon: ";
-        cin >> choice;
+        while (!(cin >> choice)) {
+            cout << "Vui long nhap so hop le (1-3): ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+        }
         if (choice == 1) loginSystem();
         else if (choice == 2) dangKyTaiKhoan();
-        else if (choice != 3) cout << "Lua chon khong hop le. Vui long thu lai.\n";
+        else if (choice != 3 && (choice < 1 || choice > 3)) cout << "Lua chon khong hop le. Vui long chon tu 1-3.\n";
     } while (choice != 3);
 
     return 0;
