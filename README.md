@@ -18,7 +18,7 @@ Tạ Hoàng Long
 
 
 *Phân tích & Đặc tả chức năng
-Người dùng thông thường:
+Người dùng thông thường (USER):
 Đăng ký tài khoản
 Đăng nhập hệ thống
 Cập nhật thông tin cá nhân (email, số điện thoại, tên)
@@ -41,9 +41,6 @@ Không cần thư viện ngoài
 
 *Cách chạy chương trình
   Khởi động chương trình:
-  bash
-  Sao chép
-  Chỉnh sửa
   ./PTKL
   Giao diện dòng lệnh chính:
   === HE THONG QUAN LY VI DIEM ===
